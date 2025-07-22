@@ -9,8 +9,23 @@ interface DialogContextType {
 
 const DialogContext = createContext<DialogContextType | undefined>(undefined);
 
-export function Dialog({ children }: { children: ReactNode }) {
-  const [open, setOpen] = useState(false);
+interface DialogProps {
+  children: ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export function Dialog({ children, open: controlledOpen, onOpenChange }: DialogProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  
+  const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
+  const setOpen = (newOpen: boolean) => {
+    if (onOpenChange) {
+      onOpenChange(newOpen);
+    } else {
+      setInternalOpen(newOpen);
+    }
+  };
   
   return (
     <DialogContext.Provider value={{ open, setOpen }}>

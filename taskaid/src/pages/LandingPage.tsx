@@ -27,8 +27,6 @@ type SignUpFormData = z.infer<typeof signUpSchema>;
 type SignInFormData = z.infer<typeof signInSchema>;
 
 export default function LandingPage() {
-  const [, setIsSignUpOpen] = useState(false);
-  const [, setIsSignInOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { signUp, signIn } = useAuth();
   const navigate = useNavigate();
@@ -78,15 +76,16 @@ export default function LandingPage() {
   const passwordStrength = getPasswordStrength(signUpForm.watch('password') || '');
 
   return (
+    <>
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-40 w-full border-b bg-background">
         <div className="container mx-auto flex h-16 items-center justify-between px-6">
           <div className="font-bold text-xl">TaskAid</div>
           <div className="flex items-center gap-4">
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="ghost" onClick={() => setIsSignInOpen(true)}>
+                <Button variant="ghost">
                   Log In
                 </Button>
               </DialogTrigger>
@@ -127,10 +126,6 @@ export default function LandingPage() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => {
-                        setIsSignInOpen(false);
-                        setIsSignUpOpen(true);
-                      }}
                     >
                       Sign Up
                     </Button>
@@ -141,7 +136,7 @@ export default function LandingPage() {
             
             <Dialog>
               <DialogTrigger asChild>
-                <Button onClick={() => setIsSignUpOpen(true)}>
+                <Button>
                   Get Started
                 </Button>
               </DialogTrigger>
@@ -207,10 +202,6 @@ export default function LandingPage() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => {
-                        setIsSignUpOpen(false);
-                        setIsSignInOpen(true);
-                      }}
                     >
                       Log In
                     </Button>
@@ -314,5 +305,6 @@ export default function LandingPage() {
         </div>
       </footer>
     </div>
+    </>
   );
 }
