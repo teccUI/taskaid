@@ -1,6 +1,6 @@
 import Header from '@/components/layout/Header';
-import TaskList from '@/components/TaskList';
-import BucketGrid from '@/components/BucketGrid';
+import TaskList from '@/components/task/TaskList';
+import BucketGrid from '@/components/buckets/BucketGrid';
 import { Card, CardContent } from '@/components/ui/card';
 import { CheckCircle, FileText, Flame } from 'lucide-react';
 
@@ -46,3 +46,4 @@ export default function DashboardPage() {
     </div>
   );
 }
+
