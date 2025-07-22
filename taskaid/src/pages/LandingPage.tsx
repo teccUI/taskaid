@@ -30,7 +30,7 @@ export default function LandingPage() {
   const [loading, setLoading] = useState(false);
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
   const [isSignInOpen, setIsSignInOpen] = useState(false);
-  const { signUp, signIn } = useAuth();
+  const { signUp, signIn, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   const signUpForm = useForm<SignUpFormData>({
@@ -60,6 +60,18 @@ export default function LandingPage() {
       navigate('/dashboard');
     } catch (error) {
       console.error('Sign in error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    try {
+      await signInWithGoogle();
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Failed to sign in with Google', error);
     } finally {
       setLoading(false);
     }
@@ -196,6 +208,21 @@ export default function LandingPage() {
           <DialogTitle>Sign Up</DialogTitle>
         </DialogHeader>
         <form onSubmit={signUpForm.handleSubmit(onSignUp)} className="space-y-4">
+          <Button variant="outline" type="button" onClick={handleGoogleSignIn} className="w-full" disabled={loading}>
+            Sign in with Google
+          </Button>
+          
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                Or continue with
+              </span>
+            </div>
+          </div>
+          
           <div>
             <Input
               placeholder="Email"
@@ -272,6 +299,21 @@ export default function LandingPage() {
           <DialogTitle>Log In</DialogTitle>
         </DialogHeader>
         <form onSubmit={signInForm.handleSubmit(onSignIn)} className="space-y-4">
+          <Button variant="outline" type="button" onClick={handleGoogleSignIn} className="w-full" disabled={loading}>
+            Sign in with Google
+          </Button>
+          
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                Or continue with
+              </span>
+            </div>
+          </div>
+          
           <div>
             <Input
               placeholder="Email"

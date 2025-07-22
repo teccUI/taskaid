@@ -12,7 +12,9 @@ import {
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
   signOut, 
-  onAuthStateChanged 
+  onAuthStateChanged,
+  GoogleAuthProvider,
+  signInWithPopup
 } from 'firebase/auth';
 import { auth } from '../firebase/config';
 
@@ -22,6 +24,7 @@ interface AuthContextType {
   loading: boolean;
   signUp: (email: string, password: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -45,12 +48,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
     return unsubscribe;
   }, []);
 
-  const signUp = (email: string, password: string) => {
-    return createUserWithEmailAndPassword(auth, email, password);
+  const signUp = async (email: string, password: string) => {
+    await createUserWithEmailAndPassword(auth, email, password);
   };
 
-  const signIn = (email: string, password: string) => {
-    return signInWithEmailAndPassword(auth, email, password);
+  const signIn = async (email: string, password: string) => {
+    await signInWithEmailAndPassword(auth, email, password);
+  };
+
+  const signInWithGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (error) {
+      console.error("Google Sign-In Error:", error);
+      throw error;
+    }
   };
 
   const logout = () => {
@@ -62,6 +75,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     loading,
     signUp,
     signIn,
+    signInWithGoogle,
     logout,
   };
 
