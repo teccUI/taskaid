@@ -7,7 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 const signUpSchema = z.object({
   email: z.string().email('Please enter a valid email'),
@@ -28,6 +28,8 @@ type SignInFormData = z.infer<typeof signInSchema>;
 
 export default function LandingPage() {
   const [loading, setLoading] = useState(false);
+  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
+  const [isSignInOpen, setIsSignInOpen] = useState(false);
   const { signUp, signIn } = useAuth();
   const navigate = useNavigate();
 
@@ -83,132 +85,13 @@ export default function LandingPage() {
         <div className="container mx-auto flex h-16 items-center justify-between px-6">
           <div className="font-bold text-xl">TaskAid</div>
           <div className="flex items-center gap-4">
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="ghost">
-                  Log In
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Log In</DialogTitle>
-                </DialogHeader>
-                <form onSubmit={signInForm.handleSubmit(onSignIn)} className="space-y-4">
-                  <div>
-                    <Input
-                      placeholder="Email"
-                      type="email"
-                      {...signInForm.register('email')}
-                    />
-                    {signInForm.formState.errors.email && (
-                      <p className="text-sm text-red-500 mt-1">
-                        {signInForm.formState.errors.email.message}
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <Input
-                      placeholder="Password"
-                      type="password"
-                      {...signInForm.register('password')}
-                    />
-                    {signInForm.formState.errors.password && (
-                      <p className="text-sm text-red-500 mt-1">
-                        {signInForm.formState.errors.password.message}
-                      </p>
-                    )}
-                  </div>
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? 'Logging in...' : 'Log In'}
-                  </Button>
-                  <div className="text-center text-sm text-muted-foreground">
-                    New here?{' '}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                    >
-                      Sign Up
-                    </Button>
-                  </div>
-                </form>
-              </DialogContent>
-            </Dialog>
+            <Button variant="ghost" onClick={() => setIsSignInOpen(true)}>
+              Log In
+            </Button>
             
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button>
-                  Get Started
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Sign Up</DialogTitle>
-                </DialogHeader>
-                <form onSubmit={signUpForm.handleSubmit(onSignUp)} className="space-y-4">
-                  <div>
-                    <Input
-                      placeholder="Email"
-                      type="email"
-                      {...signUpForm.register('email')}
-                    />
-                    {signUpForm.formState.errors.email && (
-                      <p className="text-sm text-red-500 mt-1">
-                        {signUpForm.formState.errors.email.message}
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <Input
-                      placeholder="Password"
-                      type="password"
-                      {...signUpForm.register('password')}
-                    />
-                    <div className="flex gap-1 mt-2">
-                      {[1, 2, 3, 4, 5].map((level) => (
-                        <div
-                          key={level}
-                          className={`h-2 flex-1 rounded ${
-                            passwordStrength >= level ? 'bg-green-500' : 'bg-gray-200'
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    {signUpForm.formState.errors.password && (
-                      <p className="text-sm text-red-500 mt-1">
-                        {signUpForm.formState.errors.password.message}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      {...signUpForm.register('terms')}
-                      className="rounded"
-                    />
-                    <label className="text-sm">
-                      I accept Terms & Privacy
-                    </label>
-                  </div>
-                  {signUpForm.formState.errors.terms && (
-                    <p className="text-sm text-red-500">
-                      {signUpForm.formState.errors.terms.message}
-                    </p>
-                  )}
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? 'Creating Account...' : 'Create Account'}
-                  </Button>
-                  <div className="text-center text-sm text-muted-foreground">
-                    Already have an account?{' '}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                    >
-                      Log In
-                    </Button>
-                  </div>
-                </form>
-              </DialogContent>
-            </Dialog>
+            <Button onClick={() => setIsSignUpOpen(true)}>
+              Get Started
+            </Button>
           </div>
         </div>
       </header>
@@ -305,6 +188,133 @@ export default function LandingPage() {
         </div>
       </footer>
     </div>
+    
+    {/* Sign Up Dialog */}
+    <Dialog open={isSignUpOpen} onOpenChange={setIsSignUpOpen}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Sign Up</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={signUpForm.handleSubmit(onSignUp)} className="space-y-4">
+          <div>
+            <Input
+              placeholder="Email"
+              type="email"
+              {...signUpForm.register('email')}
+            />
+            {signUpForm.formState.errors.email && (
+              <p className="text-sm text-red-500 mt-1">
+                {signUpForm.formState.errors.email.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <Input
+              placeholder="Password"
+              type="password"
+              {...signUpForm.register('password')}
+            />
+            <div className="flex gap-1 mt-2">
+              {[1, 2, 3, 4, 5].map((level) => (
+                <div
+                  key={level}
+                  className={`h-2 flex-1 rounded ${
+                    passwordStrength >= level ? 'bg-green-500' : 'bg-gray-200'
+                  }`}
+                />
+              ))}
+            </div>
+            {signUpForm.formState.errors.password && (
+              <p className="text-sm text-red-500 mt-1">
+                {signUpForm.formState.errors.password.message}
+              </p>
+            )}
+          </div>
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              {...signUpForm.register('terms')}
+              className="rounded"
+            />
+            <label className="text-sm">
+              I accept Terms & Privacy
+            </label>
+          </div>
+          {signUpForm.formState.errors.terms && (
+            <p className="text-sm text-red-500">
+              {signUpForm.formState.errors.terms.message}
+            </p>
+          )}
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? 'Creating Account...' : 'Create Account'}
+          </Button>
+          <div className="text-center text-sm text-muted-foreground">
+            Already have an account?{' '}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setIsSignUpOpen(false);
+                setIsSignInOpen(true);
+              }}
+            >
+              Log In
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+    
+    {/* Sign In Dialog */}
+    <Dialog open={isSignInOpen} onOpenChange={setIsSignInOpen}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Log In</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={signInForm.handleSubmit(onSignIn)} className="space-y-4">
+          <div>
+            <Input
+              placeholder="Email"
+              type="email"
+              {...signInForm.register('email')}
+            />
+            {signInForm.formState.errors.email && (
+              <p className="text-sm text-red-500 mt-1">
+                {signInForm.formState.errors.email.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <Input
+              placeholder="Password"
+              type="password"
+              {...signInForm.register('password')}
+            />
+            {signInForm.formState.errors.password && (
+              <p className="text-sm text-red-500 mt-1">
+                {signInForm.formState.errors.password.message}
+              </p>
+            )}
+          </div>
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? 'Logging in...' : 'Log In'}
+          </Button>
+          <div className="text-center text-sm text-muted-foreground">
+            New here?{' '}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setIsSignInOpen(false);
+                setIsSignUpOpen(true);
+              }}
+            >
+              Sign Up
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
     </>
   );
 }
